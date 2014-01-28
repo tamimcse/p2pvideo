@@ -27,19 +27,15 @@ public class Config
         Properties prop = new Properties();
         try
         {
-            prop.load(new FileInputStream("D:/Newfolder/MyInit.tini"));
+            prop.load(new FileInputStream("app.config"));
             CHUNK_SIZE = Integer.parseInt(prop.getProperty("chunk_size"));
             MAXIMUM_NUMBER_OF_SLAVE = Integer.parseInt(prop.getProperty("maximum_slave_number"));
             LOCAL_PORT = Integer.parseInt(prop.getProperty("local_port"));
             localDir = prop.getProperty("local_dir");
-
-            prop.load(new FileInputStream("D:/Newfolder/SampleFile.tinitorrent"));
             fileName = prop.getProperty("filename");
             fileDirectory = prop.getProperty("directory");
             infoHash = prop.getProperty("info_hash");
             trackerIP = prop.getProperty("tracker");
-
-            prop.load(new FileInputStream("D:/Newfolder/SampleFile.tinitracker"));
             SEEDER_IP = prop.getProperty("seeder_ip");
             SEEDER_PORT = Integer.parseInt(prop.getProperty("seeder_port"));
         }

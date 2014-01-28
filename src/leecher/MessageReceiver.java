@@ -12,9 +12,13 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import messages.MessageManager;
 import messages.MessageType;
 import org.apache.commons.io.FileUtils;
+import uk.co.caprica.vlcj.medialist.MediaList;
+import uk.co.caprica.vlcj.player.list.MediaListPlayer;
 import video.VLCMediaPlayer;
 
 /**
@@ -23,10 +27,12 @@ import video.VLCMediaPlayer;
  */
 public class MessageReceiver extends Thread
 {
+
     static int count = 0;
     Socket clientSocket;
     ArrayList<String> chunks = new ArrayList<String>();
     static TreeMap<String, String> sortMap = new TreeMap<String, String>();
+    static MediaListPlayer mediaListPlayer = null;
 
     public MessageReceiver(Socket clientSocket)
     {
@@ -36,9 +42,18 @@ public class MessageReceiver extends Thread
     @Override
     public void run()
     {
+//                try
+//                {
+//                    Thread.sleep(30000);
+//                }
+//                catch (InterruptedException ex)
+//                {
+//                    Logger.getLogger(MessageReceiver.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//        
         try
         {
-            byte [] bytes = receiveByte(clientSocket);
+            byte[] bytes = receiveByte(clientSocket);
             MessageType type = MessageManager.getType(bytes);
             if (type == MessageType.HANDSHAKE)
             {
@@ -46,10 +61,21 @@ public class MessageReceiver extends Thread
             }
             else
             {
-                byte [] fileData = new byte[bytes.length - 8];
+                byte[] fileData = new byte[bytes.length - 8];
                 System.arraycopy(bytes, 8, fileData, 0, fileData.length);
-                Files.write(Paths.get(String.format("%s/download/%s%d.mpg", Config.localDir, Config.fileName, count++)), fileData, StandardOpenOption.CREATE);
-                VLCMediaPlayer.play();
+                String filePath = String.format("%s/download/%s%d.mp4", Config.localDir, Config.fileName, count++);
+                Files.write(Paths.get(filePath), fileData, StandardOpenOption.CREATE);
+
+                //Cludge!!! VLC does not take / style path on windows
+                String filePath1 = filePath.replace("/", "\\");
+
+
+//                MediaListPlayer mediaListPlayer = null;
+
+                System.out.println("Adding Path " + filePath1);
+
+                VLCMediaPlayer.INSTANCE.play(filePath1);
+//                VLCMediaPlayer.play();
 
             }
             clientSocket.close();
@@ -81,18 +107,18 @@ public class MessageReceiver extends Thread
         }
         return null;
     }
-    
+
     byte[] receiveByte(Socket clientSocket)
     {
         try
         {
             DataInputStream input = new DataInputStream(clientSocket.getInputStream());
-            
+
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             byte buffer[] = new byte[1024];
-            for(int s; (s=input.read(buffer)) != -1; )
+            for (int s; (s = input.read(buffer)) != -1;)
             {
-              baos.write(buffer, 0, s);
+                baos.write(buffer, 0, s);
             }
             byte result[] = baos.toByteArray();
             input.close();
@@ -103,5 +129,5 @@ public class MessageReceiver extends Thread
             System.out.println(e);
         }
         return null;
-    }  
+    }
 }
