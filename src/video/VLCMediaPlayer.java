@@ -107,11 +107,18 @@ public enum VLCMediaPlayer
                 isPlayStarted = true;
             }
             else
-            {
-                MediaList mediaList = mediaPlayerFactory.newMediaList();
-                mediaList.addMedia(file, options);
-                mediaListPlayer.setMediaList(mediaList);
-                mediaListPlayer.play();
+            {                    
+                if(mediaListPlayer.isPlaying())
+                {
+                    mediaListPlayer.getMediaList().addMedia(file, options);
+                }
+                else
+                {
+                    MediaList mediaList = mediaPlayerFactory.newMediaList();
+                    mediaList.addMedia(file, options);
+                    mediaListPlayer.setMediaList(mediaList);
+                    mediaListPlayer.play();                    
+                }
             }
 
         }
