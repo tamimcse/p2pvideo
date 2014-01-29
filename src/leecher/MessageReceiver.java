@@ -57,14 +57,20 @@ public class MessageReceiver extends Thread
             MessageType type = MessageManager.getType(bytes);
             if (type == MessageType.HANDSHAKE)
             {
-                System.out.println("Hand shake message received");
+                Config.NUM_OF_FILES = Integer.parseInt(new String(bytes).split(",")[3]);
             }
             else
             {
                 byte[] fileData = new byte[bytes.length - 8];
                 System.arraycopy(bytes, 8, fileData, 0, fileData.length);
-                String filePath = String.format("%s/download/%s%d.mp4", Config.localDir, Config.fileName, count++);
+                String filePath = String.format("%s/download/%s_%d.%s", Config.localDir, Config.fileName, ++count, Config.FILE_EXTENSION);
                 Files.write(Paths.get(filePath), fileData, StandardOpenOption.CREATE);
+                
+                if(Config.NUM_OF_FILES == count)
+                {
+                    FileUtils.write(new File("temp.txt"), Config.NUM_OF_FILES+"");    
+                    Config.IS_SEEDER = true;
+                }
 
                 //Cludge!!! VLC does not take / style path on windows
                 String filePath1 = filePath.replace("/", "\\");

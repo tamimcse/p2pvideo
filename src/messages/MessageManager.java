@@ -11,9 +11,9 @@ import java.util.Map;
  */
 public class MessageManager
 {
-    public static String getHandshakeMessage(String peerID, String hashInfo)
+    public static String getHandshakeMessage(String peerID, String hashInfo, int numberOfPeices)
     {
-        String s = String.format("BitTorrent Protocol0%s%s", peerID, hashInfo);
+        String s = String.format("p2pvideo,%s,%s,%d", peerID, hashInfo, numberOfPeices);
         int length = s.getBytes().length + 1;
         byte lengthField[] = new byte[1];
         lengthField[0] = (byte) length;

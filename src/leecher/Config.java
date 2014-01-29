@@ -21,7 +21,11 @@ public class Config
     public static String trackerIP;
     public static int SEEDER_PORT = 32;
     public static String SEEDER_IP;
-
+    public static String FILE_NAME;
+    public static String FILE_EXTENSION;
+    public static int NUM_OF_FILES;
+    public static boolean IS_SEEDER;
+    
     static
     {
         Properties prop = new Properties();
@@ -33,11 +37,11 @@ public class Config
             LOCAL_PORT = Integer.parseInt(prop.getProperty("local_port"));
             localDir = prop.getProperty("local_dir");
             fileName = prop.getProperty("filename");
-            fileDirectory = prop.getProperty("directory");
             infoHash = prop.getProperty("info_hash");
             trackerIP = prop.getProperty("tracker");
             SEEDER_IP = prop.getProperty("seeder_ip");
             SEEDER_PORT = Integer.parseInt(prop.getProperty("seeder_port"));
+            FILE_EXTENSION = prop.getProperty("file_extension");
         }
         catch (IOException ex)
         {

@@ -26,13 +26,13 @@ public class MessageSender extends Thread
         try
         {
             socket = new Socket(Config.SEEDER_IP, Config.SEEDER_PORT);
-            send(socket, MessageManager.getHandshakeMessage("1", "4888884"));
+            send(socket, MessageManager.getHandshakeMessage("1", "4888884", Config.NUM_OF_FILES));
             socket.close();
             
-            for(int i = 0; i < 5; i++)
+            for(int i = 1; i <= Config.NUM_OF_FILES; i++)
             {
                 socket = new Socket(Config.SEEDER_IP, Config.SEEDER_PORT);
-                byte[] bytes = Files.readAllBytes(Paths.get(String.format("%s/files/%s%d.mp4", Config.localDir, Config.fileName, i)));
+                byte[] bytes = Files.readAllBytes(Paths.get(String.format("%s/%s_%d.mp4", Config.localDir, Config.fileName, i)));
                 send(socket, MessageManager.getVideoPieceMessage(i, bytes));
                 socket.close();                          
             }

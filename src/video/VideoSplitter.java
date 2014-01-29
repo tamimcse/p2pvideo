@@ -37,7 +37,7 @@ public class VideoSplitter
         }
     }
 
-    public void splitFiles() throws Exception
+    public int splitFiles() throws Exception
     {
         long inputTimeIntervalInMillies = TimeUnit.MICROSECONDS.convert(timeIntervalInSec, TimeUnit.SECONDS);
         //create a media reader
@@ -70,8 +70,9 @@ public class VideoSplitter
                 cutter.addListener(writer);
             }
         }
-        writer.close();// flusing and closing earlier writers..
-        mediaReader.close();
+//        writer.close();// flusing and closing earlier writers..
+//        mediaReader.close();
+        return fileCounter;
     }
 
     public class Cutter extends MediaToolAdapter
