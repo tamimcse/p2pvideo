@@ -50,9 +50,7 @@ public class Main
         if(!Config.IS_SEEDER)
         {
             SocketSender sendHello = new SocketSender(Config.SEEDER_IP, Config.SEEDER_PORT, MessageManager.getHelloMessage(Inet4Address.getLocalHost().getHostAddress(),Config.LOCAL_PORT));
-            sendHello.start();
+            MessageSender.addTask(sendHello);
         }
-//        MessageSender seeder = new MessageSender();
-//        seeder.start();
     }
 }

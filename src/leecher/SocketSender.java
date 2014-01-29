@@ -7,6 +7,7 @@ package leecher;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.nio.CharBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import messages.MessageManager;
@@ -15,7 +16,7 @@ import messages.MessageManager;
  *
  * @author Tamim
  */
-public class SocketSender extends Thread
+public class SocketSender implements Runnable
 {
     String ip;
     byte [] data;

@@ -26,6 +26,7 @@ public class Config
     public static boolean IS_SEEDER;
     public static String LEECHER_IP;
     public static int LEECHER_PORT;
+    public static int THREAD_POOL;
     
     static
     {
@@ -43,6 +44,7 @@ public class Config
             SEEDER_IP = prop.getProperty("seeder_ip");
             SEEDER_PORT = Integer.parseInt(prop.getProperty("seeder_port"));
             FILE_EXTENSION = prop.getProperty("file_extension");
+            THREAD_POOL = Integer.parseInt(prop.getProperty("thread_pool"));
         }
         catch (IOException ex)
         {

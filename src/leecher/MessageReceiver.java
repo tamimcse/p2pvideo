@@ -59,7 +59,7 @@ public class MessageReceiver extends Thread
                 Config.LEECHER_IP = s[1];
                 Config.LEECHER_PORT = Integer.parseInt(s[2]);
                 MessageSender seeder = new MessageSender();
-                seeder.start();
+                seeder.send();
             }
             else if (type == MessageType.HANDSHAKE)
             {
