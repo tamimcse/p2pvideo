@@ -5,6 +5,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -12,6 +13,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import messages.MessageManager;
@@ -28,7 +30,7 @@ import video.VLCMediaPlayer;
 public class MessageReceiver extends Thread
 {
 
-    static int count = 0;
+    static AtomicInteger count = new AtomicInteger(0);
     Socket clientSocket;
     ArrayList<String> chunks = new ArrayList<String>();
     static TreeMap<String, String> sortMap = new TreeMap<String, String>();
@@ -62,11 +64,11 @@ public class MessageReceiver extends Thread
             else
             {
                 byte[] fileData = new byte[bytes.length - 8];
+                int id = bytes[3] | (bytes[2] << 1) | (bytes[1] << 2) | (bytes[0] << 3);
                 System.arraycopy(bytes, 8, fileData, 0, fileData.length);
-                String filePath = String.format("%s/download/%s_%d.%s", Config.localDir, Config.fileName, ++count, Config.FILE_EXTENSION);
-                Files.write(Paths.get(filePath), fileData, StandardOpenOption.CREATE);
-                
-                if(Config.NUM_OF_FILES == count)
+                String filePath = String.format("%s/download/%s_%d.%s", Config.localDir, Config.fileName, id, Config.FILE_EXTENSION);
+                Files.write(Paths.get(filePath), fileData, StandardOpenOption.CREATE);                
+                if(Config.NUM_OF_FILES == count.incrementAndGet())
                 {
                     FileUtils.write(new File("temp.txt"), Config.NUM_OF_FILES+"");    
                     Config.IS_SEEDER = true;

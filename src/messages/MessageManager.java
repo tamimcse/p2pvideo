@@ -58,15 +58,6 @@ public class MessageManager
         System.arraycopy(chunkArr, 0, arr, lenthArr.length + messageID.length + chunkIDArr.length, chunkArr.length);
 
         return new String(arr);
-//        String s = String.format("%d%s", chunkID, chunk);
-//        int length = s.getBytes().length;
-//        byte lengthField [] = new byte[4];
-//        lengthField[0] = (byte)(length & 255);
-//        lengthField[1] = (byte)(length & (255<<8));
-//        lengthField[2] = (byte)(length & (255<<16));
-//        lengthField[3] = (byte)(length & (255<<24));
-//        String l = new String(lengthField);
-//        return String.format("%s%s", l, s);
     }
 
     public static ArrayList<String> parsePIECEMessage(String message)
