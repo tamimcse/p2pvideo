@@ -25,8 +25,9 @@ import video.VLCMediaPlayer;
 public class MessageReceiver extends Thread
 {
 
+    static Object obj = new Object();
     static AtomicInteger count = new AtomicInteger(0);
-    static AtomicInteger nextFile = new AtomicInteger(1);
+    static int nextFile = 1;
     Socket clientSocket;
     ArrayList<String> chunks = new ArrayList<String>();
     static TreeMap<String, String> sortMap = new TreeMap<String, String>();
@@ -82,25 +83,22 @@ public class MessageReceiver extends Thread
                 //Cludge!!! VLC does not take / style path on windows
                 String filePath1 = filePath.replace("/", "\\");
 
-                while (true)
+                synchronized (obj)
                 {
-                    synchronized(nextFile)
+                    while (id != nextFile)
                     {
-                        if (id == nextFile.get())
-                        {
-                            System.out.println("Adding Path " + filePath1);
-                            VLCMediaPlayer.INSTANCE.play(filePath1);
-                            nextFile.incrementAndGet();
-                            break;
-                        }                        
+                        obj.wait();
                     }
-
+                    System.out.println("Adding Path " + filePath1);
+                    VLCMediaPlayer.INSTANCE.play(filePath1);
+                    nextFile++;
+                    obj.notifyAll();
                 }
 
             }
             clientSocket.close();
         }
-        catch (IOException e)
+        catch (Exception e)
         {
             System.out.println(e);
         }
