@@ -32,7 +32,7 @@ public class SocketSender implements Runnable
     public SocketSender(String ip, int port, byte [] data)
     {
         this.ip = ip;
-        data = new byte[data.length];
+        this.data = new byte[data.length];
         System.arraycopy(data, 0, this.data, 0, data.length);
         this.port = port;
     }

@@ -26,6 +26,7 @@ public class MessageReceiver extends Thread
 {
 
     static AtomicInteger count = new AtomicInteger(0);
+    static AtomicInteger nextFile = new AtomicInteger(1);
     Socket clientSocket;
     ArrayList<String> chunks = new ArrayList<String>();
     static TreeMap<String, String> sortMap = new TreeMap<String, String>();
@@ -55,7 +56,7 @@ public class MessageReceiver extends Thread
 
             if (type == MessageType.HELLO && Config.IS_SEEDER)
             {
-                String [] s = new String(bytes).split(",");
+                String[] s = new String(bytes).split(",");
                 Config.LEECHER_IP = s[1];
                 Config.LEECHER_PORT = Integer.parseInt(s[2]);
                 MessageSender seeder = new MessageSender();
@@ -81,11 +82,20 @@ public class MessageReceiver extends Thread
                 //Cludge!!! VLC does not take / style path on windows
                 String filePath1 = filePath.replace("/", "\\");
 
+                while (true)
+                {
+                    synchronized(nextFile)
+                    {
+                        if (id == nextFile.get())
+                        {
+                            System.out.println("Adding Path " + filePath1);
+                            VLCMediaPlayer.INSTANCE.play(filePath1);
+                            nextFile.incrementAndGet();
+                            break;
+                        }                        
+                    }
 
-                System.out.println("Adding Path " + filePath1);
-
-                VLCMediaPlayer.INSTANCE.play(filePath1);
-//                VLCMediaPlayer.play();
+                }
 
             }
             clientSocket.close();
