@@ -41,9 +41,9 @@ public class Main
         }
 
         System.out.println("chunk_size: " + Config.CHUNK_SIZE);
-        Leecher seeder = new Leecher();
-        seeder.start();
-        MessageSender leecher = new MessageSender();
+        Leecher leecher = new Leecher();
         leecher.start();
+        MessageSender seeder = new MessageSender();
+        seeder.start();
     }
 }

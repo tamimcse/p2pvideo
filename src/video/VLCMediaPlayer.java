@@ -5,17 +5,13 @@
 package video;
 
 import com.sun.jna.NativeLibrary;
-import com.sun.org.apache.bcel.internal.generic.INSTANCEOF;
 import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Color;
-import java.util.List;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
 import uk.co.caprica.vlcj.medialist.MediaList;
-import uk.co.caprica.vlcj.medialist.MediaListItem;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import uk.co.caprica.vlcj.player.embedded.videosurface.CanvasVideoSurface;
@@ -34,7 +30,7 @@ public enum VLCMediaPlayer
     MediaListPlayer mediaListPlayer;
     MediaPlayerFactory mediaPlayerFactory;
     boolean isPlayStarted = false;
-    
+
     VLCMediaPlayer()
     {
         NativeLibrary.addSearchPath("libvlc", "C:/Program Files (x86)/VideoLAN/VLC");
@@ -54,12 +50,12 @@ public enum VLCMediaPlayer
             @Override
             public void nextItem(MediaListPlayer mediaListPlayer, libvlc_media_t item, String itemMrl)
             {
-                
+
                 System.out.println("nextItem()");
 
             }
         });
-        
+
         mediaListPlayer.addMediaListPlayerEventListener(new MediaListPlayerEventAdapter()
         {
         });
@@ -93,9 +89,9 @@ public enum VLCMediaPlayer
             {
             };
 
-            if(!isPlayStarted)
+            if (!isPlayStarted)
             {
-                            this.mediaListPlayer.getMediaList().addMedia(file, options);
+                this.mediaListPlayer.getMediaList().addMedia(file, options);
                 mediaListPlayer.play();
                 isPlayStarted = true;
             }
@@ -113,5 +109,4 @@ public enum VLCMediaPlayer
             ex.printStackTrace();
         }
     }
-
 }

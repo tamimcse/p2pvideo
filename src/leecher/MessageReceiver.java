@@ -2,24 +2,18 @@ package leecher;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import messages.MessageManager;
 import messages.MessageType;
 import org.apache.commons.io.FileUtils;
-import uk.co.caprica.vlcj.medialist.MediaList;
 import uk.co.caprica.vlcj.player.list.MediaListPlayer;
 import video.VLCMediaPlayer;
 
@@ -77,9 +71,7 @@ public class MessageReceiver extends Thread
                 //Cludge!!! VLC does not take / style path on windows
                 String filePath1 = filePath.replace("/", "\\");
 
-
-//                MediaListPlayer mediaListPlayer = null;
-
+                
                 System.out.println("Adding Path " + filePath1);
 
                 VLCMediaPlayer.INSTANCE.play(filePath1);

@@ -9,8 +9,8 @@ import java.io.IOException;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import messages.MessageManager;
 import leecher.Config;
+import messages.MessageManager;
 
 /**
  *
