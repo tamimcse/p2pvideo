@@ -8,12 +8,12 @@ import java.net.Socket;
  *
  * @author Tamim
  */
-public class Leecher extends Thread
+public class SocketListener extends Thread
 {
 
     ServerSocket serverSocket = null;
 
-    public Leecher()
+    public SocketListener()
     {
         try
         {

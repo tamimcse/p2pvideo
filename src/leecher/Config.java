@@ -24,6 +24,8 @@ public class Config
     public static String FILE_EXTENSION;
     public static int NUM_OF_FILES;
     public static boolean IS_SEEDER;
+    public static String LEECHER_IP;
+    public static int LEECHER_PORT;
     
     static
     {

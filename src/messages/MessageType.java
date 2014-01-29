@@ -6,5 +6,5 @@ package messages;
  */
 public enum MessageType {
 
-    HANDSHAKE, PIECE, VIDEO_PIECE,
+    HELLO, HANDSHAKE, PIECE, VIDEO_PIECE,
 }

@@ -83,10 +83,19 @@ public class MessageManager
         }
     }
     
+    public static String getHelloMessage(String ip, int localPort)
+    {
+        return "hello,"+ip+","+localPort;
+    }
+    
     public static MessageType getType(byte [] msg)
     {
-        
-        if (msg[0] == msg.length)
+        String s = new String(msg);
+        if(s.split(",")[0].equalsIgnoreCase("hello"))
+        {
+            return MessageType.HELLO;
+        }
+        else if (msg[0] == msg.length)
         {
             return MessageType.HANDSHAKE;
         }

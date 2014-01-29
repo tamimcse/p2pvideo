@@ -2,22 +2,40 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package seeder;
+package leecher;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import leecher.Config;
 import messages.MessageManager;
 
 /**
  *
  * @author Tamim
  */
-public class MessageSender extends Thread
+public class SocketSender extends Thread
 {
+    String ip;
+    byte [] data;
+    int port;
+
+    public SocketSender(String ip, int port, String data)
+    {
+        this.ip = ip;
+        this.data = data.getBytes();
+        this.port = port;
+    }
+    
+    public SocketSender(String ip, int port, byte [] data)
+    {
+        this.ip = ip;
+        data = new byte[data.length];
+        System.arraycopy(data, 0, this.data, 0, data.length);
+        this.port = port;
+    }
+    
     @Override
     public void run()
     {
@@ -25,17 +43,9 @@ public class MessageSender extends Thread
         String response;
         try
         {
-            socket = new Socket(Config.LEECHER_IP, Config.LEECHER_PORT);
-            send(socket, MessageManager.getHandshakeMessage("1", "4888884", Config.NUM_OF_FILES));
+            socket = new Socket(ip, port);
+            send(socket, data);
             socket.close();
-            
-            for(int i = 1; i <= Config.NUM_OF_FILES; i++)
-            {
-                socket = new Socket(Config.LEECHER_IP, Config.LEECHER_PORT);
-                byte[] bytes = Files.readAllBytes(Paths.get(String.format("%s/%s_%d.%s", Config.localDir, Config.fileName, i, Config.FILE_EXTENSION)));
-                send(socket, MessageManager.getVideoPieceMessage(i, bytes));
-                socket.close();                          
-            }
         }
         catch (IOException e)
         {
@@ -74,5 +84,5 @@ public class MessageSender extends Thread
         {
             System.out.println(e);
         }
-    }    
+    }        
 }

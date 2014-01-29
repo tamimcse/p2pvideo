@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import messages.MessageManager;
 import messages.MessageType;
 import org.apache.commons.io.FileUtils;
+import seeder.MessageSender;
 import uk.co.caprica.vlcj.player.list.MediaListPlayer;
 import video.VLCMediaPlayer;
 
@@ -51,7 +52,16 @@ public class MessageReceiver extends Thread
         {
             byte[] bytes = receiveByte(clientSocket);
             MessageType type = MessageManager.getType(bytes);
-            if (type == MessageType.HANDSHAKE)
+
+            if (type == MessageType.HELLO && Config.IS_SEEDER)
+            {
+                String [] s = new String(bytes).split(",");
+                Config.LEECHER_IP = s[1];
+                Config.LEECHER_PORT = Integer.parseInt(s[2]);
+                MessageSender seeder = new MessageSender();
+                seeder.start();
+            }
+            else if (type == MessageType.HANDSHAKE)
             {
                 Config.NUM_OF_FILES = Integer.parseInt(new String(bytes).split(",")[3]);
             }
@@ -60,18 +70,18 @@ public class MessageReceiver extends Thread
                 byte[] fileData = new byte[bytes.length - 8];
                 int id = bytes[3] | (bytes[2] << 1) | (bytes[1] << 2) | (bytes[0] << 3);
                 System.arraycopy(bytes, 8, fileData, 0, fileData.length);
-                String filePath = String.format("%s/download/%s_%d.%s", Config.localDir, Config.fileName, id, Config.FILE_EXTENSION);
-                Files.write(Paths.get(filePath), fileData, StandardOpenOption.CREATE);                
-                if(Config.NUM_OF_FILES == count.incrementAndGet())
+                String filePath = String.format("%s/%s_%d.%s", Config.localDir, Config.fileName, id, Config.FILE_EXTENSION);
+                Files.write(Paths.get(filePath), fileData, StandardOpenOption.CREATE);
+                if (Config.NUM_OF_FILES == count.incrementAndGet())
                 {
-                    FileUtils.write(new File("temp.txt"), Config.NUM_OF_FILES+"");    
+                    FileUtils.write(new File("temp.txt"), Config.NUM_OF_FILES + "");
                     Config.IS_SEEDER = true;
                 }
 
                 //Cludge!!! VLC does not take / style path on windows
                 String filePath1 = filePath.replace("/", "\\");
 
-                
+
                 System.out.println("Adding Path " + filePath1);
 
                 VLCMediaPlayer.INSTANCE.play(filePath1);
