@@ -11,6 +11,8 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import messages.MessageManager;
 import messages.MessageType;
 import org.apache.commons.io.FileUtils;
@@ -49,7 +51,7 @@ public class MessageReceiver extends Thread
 //                {
 //                    Logger.getLogger(MessageReceiver.class.getName()).log(Level.SEVERE, null, ex);
 //                }
-//        
+        
         try
         {
             byte[] bytes = receiveByte(clientSocket);
@@ -94,7 +96,11 @@ public class MessageReceiver extends Thread
                     nextFile++;
                     obj.notifyAll();
                 }
-
+                
+                if(Config.IS_SEEDER)
+                {
+                    FileUtils.write(new File("result.txt"), VLCMediaPlayer.getNumStall()+"");
+                }
             }
             clientSocket.close();
         }

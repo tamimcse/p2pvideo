@@ -30,7 +30,13 @@ public enum VLCMediaPlayer
     MediaListPlayer mediaListPlayer;
     MediaPlayerFactory mediaPlayerFactory;
     boolean isPlayStarted = false;
+    static int numStall;
 
+    public static int getNumStall()
+    {
+        return numStall;
+    }
+    
     VLCMediaPlayer()
     {
         NativeLibrary.addSearchPath("libvlc", "C:/Program Files (x86)/VideoLAN/VLC");
@@ -85,6 +91,11 @@ public enum VLCMediaPlayer
     {
         try
         {
+            if(isPlayStarted && !mediaListPlayer.isPlaying())
+            {
+                ++numStall;
+            }
+            
             String[] options =
             {
             };
