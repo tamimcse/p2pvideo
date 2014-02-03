@@ -12,6 +12,7 @@ import com.xuggle.mediatool.event.IVideoPictureEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
+import leecher.Config;
 
 /**
  *
@@ -51,7 +52,7 @@ public class VideoSplitter
         //read and decode packets from the source file and
         //dispatch decoded audio and video to the writer
         int fileCounter = 1;
-        String url = videoFile.getAbsolutePath().substring(0, videoFile.getAbsolutePath().lastIndexOf(".")) + "_" + fileCounter + ".mp4";
+        String url = videoFile.getAbsolutePath().substring(0, videoFile.getAbsolutePath().lastIndexOf(".")) + "_" + fileCounter + Config.FILE_EXTENSION;
         IMediaWriter writer = ToolFactory.makeWriter(url, mediaReader);
         cutter.addListener(writer);
         while (mediaReader.readPacket() == null)
@@ -63,7 +64,7 @@ public class VideoSplitter
                 cutter.removeListener(writer);
                 writer.close();// flusing and closing earlier writers..
                 fileCounter++;
-                url = videoFile.getAbsolutePath().substring(0, videoFile.getAbsolutePath().lastIndexOf(".")) + "_" + fileCounter + ".mp4";
+                url = videoFile.getAbsolutePath().substring(0, videoFile.getAbsolutePath().lastIndexOf(".")) + "_" + fileCounter + Config.FILE_EXTENSION;
                 writer = ToolFactory.makeWriter(url, mediaReader);
                 writer.addListener(ToolFactory.makeDebugListener());
                 inputTimeIntervalInMillies = inputTimeIntervalInMillies + TimeUnit.MICROSECONDS.convert(timeIntervalInSec, TimeUnit.SECONDS); // next time slot..
