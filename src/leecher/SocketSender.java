@@ -44,9 +44,22 @@ public class SocketSender implements Runnable
         String response;
         try
         {
-            socket = new Socket(ip, port);
-            send(socket, data);
-            socket.close();
+            if(!Config.isProxy)
+            {
+                socket = new Socket(ip, port);
+                send(socket, data);
+                socket.close();                
+            }
+            else
+            {
+                socket = new Socket(Config.proxy_server, Config.proxy_port);
+                byte [] addressField = (this.ip+":"+this.port+"$$$").getBytes();
+                byte [] message = new byte[addressField.length+data.length];
+                System.arraycopy(addressField, 0, message, 0, addressField.length);
+                System.arraycopy(data, 0, message, addressField.length, data.length);
+                send(socket, message);
+                socket.close();                
+            }
         }
         catch (IOException e)
         {

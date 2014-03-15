@@ -27,6 +27,9 @@ public class Config
     public static String LEECHER_IP;
     public static int LEECHER_PORT;
     public static int THREAD_POOL;
+    public static boolean isProxy;
+    public static String proxy_server;
+    public static int proxy_port;
     
     static
     {
@@ -45,6 +48,9 @@ public class Config
             SEEDER_PORT = Integer.parseInt(prop.getProperty("seeder_port"));
             FILE_EXTENSION = prop.getProperty("file_extension");
             THREAD_POOL = Integer.parseInt(prop.getProperty("thread_pool"));
+            isProxy = true;// Boolean.getBoolean(prop.getProperty("isProxy"));
+            proxy_server = prop.getProperty("proxy_server");
+            proxy_port = Integer.parseInt(prop.getProperty("proxy_port"));
         }
         catch (IOException ex)
         {
