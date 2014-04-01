@@ -49,7 +49,7 @@ public class GopBasedSplitter
         //read and decode packets from the source file and
         //dispatch decoded audio and video to the writer
         int fileCounter = 1;
-        String url = videoFile.getAbsolutePath().substring(0, videoFile.getAbsolutePath().lastIndexOf(".")) + "_" + fileCounter + Config.FILE_EXTENSION;
+        String url = videoFile.getAbsolutePath().substring(0, videoFile.getAbsolutePath().lastIndexOf(".")) + "_" + fileCounter +"."+ Config.FILE_EXTENSION;
         IMediaWriter writer = ToolFactory.makeWriter(url, mediaReader);
         cutter.addListener(writer);
         while (mediaReader.readPacket() == null)
@@ -60,7 +60,7 @@ public class GopBasedSplitter
                 cutter.removeListener(writer);
                 writer.close();// flusing and closing earlier writers..
                 fileCounter++;
-                url = videoFile.getAbsolutePath().substring(0, videoFile.getAbsolutePath().lastIndexOf(".")) + "_" + fileCounter + Config.FILE_EXTENSION;
+                url = videoFile.getAbsolutePath().substring(0, videoFile.getAbsolutePath().lastIndexOf(".")) + "_" + fileCounter +"."+ Config.FILE_EXTENSION;
                 writer = ToolFactory.makeWriter(url, mediaReader);
                 writer.addListener(ToolFactory.makeDebugListener());
                 inputTimeIntervalInMillies = inputTimeIntervalInMillies + TimeUnit.MICROSECONDS.convert(maximumSegmentInterval, TimeUnit.SECONDS); // next time slot..
