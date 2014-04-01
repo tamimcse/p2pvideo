@@ -30,6 +30,8 @@ public class Config
     public static boolean isProxy;
     public static String proxy_server;
     public static int proxy_port;
+    public static boolean IS_GOP_BASED_SPLITTING;
+
     
     static
     {
@@ -48,9 +50,10 @@ public class Config
             SEEDER_PORT = Integer.parseInt(prop.getProperty("seeder_port"));
             FILE_EXTENSION = prop.getProperty("file_extension");
             THREAD_POOL = Integer.parseInt(prop.getProperty("thread_pool"));
-            isProxy = true;// Boolean.getBoolean(prop.getProperty("isProxy"));
+            isProxy = Boolean.valueOf(prop.getProperty("isProxy"));
             proxy_server = prop.getProperty("proxy_server");
             proxy_port = Integer.parseInt(prop.getProperty("proxy_port"));
+            IS_GOP_BASED_SPLITTING = Boolean.valueOf(prop.getProperty("is_GOP_Based_splitting"));
         }
         catch (IOException ex)
         {

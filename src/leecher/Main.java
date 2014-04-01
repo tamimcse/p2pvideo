@@ -17,7 +17,8 @@ import seeder.MessageSender;
 import org.apache.commons.io.FileUtils;
 import video.MediaPlayer;
 import video.VLCMediaPlayer;
-import video.VideoSplitter;
+import video.GopBasedSplitter;
+import video.TimeBasedSplitter;
 
 /**
  *
@@ -37,8 +38,18 @@ public class Main
                 
         if (!Files.exists(Paths.get("temp.txt"), LinkOption.NOFOLLOW_LINKS) && Files.exists(Paths.get(Config.localDir + "\\" + Config.fileName + "." + Config.FILE_EXTENSION), LinkOption.NOFOLLOW_LINKS))
         {
-            VideoSplitter v = new VideoSplitter(new File(Config.localDir + "\\" + Config.fileName + "." + Config.FILE_EXTENSION), Config.CHUNK_SIZE);
-            Config.NUM_OF_FILES = v.splitFiles();
+            if(Config.IS_GOP_BASED_SPLITTING)
+            {
+                GopBasedSplitter v = new GopBasedSplitter(new File(Config.localDir + "\\" + Config.fileName + "." + Config.FILE_EXTENSION), Config.CHUNK_SIZE);
+                Config.NUM_OF_FILES = v.splitFiles();    
+            }
+            else
+            {
+                TimeBasedSplitter timeBasedSplitter = new TimeBasedSplitter(new File(Config.localDir + "\\" + Config.fileName + "." + Config.FILE_EXTENSION), Config.CHUNK_SIZE);
+                Config.NUM_OF_FILES = timeBasedSplitter.splitFiles();    
+                
+            }
+            
             FileUtils.write(new File("temp.txt"), Config.NUM_OF_FILES+"");
             Config.IS_SEEDER = true;
         }
