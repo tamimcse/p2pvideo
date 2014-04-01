@@ -30,7 +30,7 @@ public class Config
     public static boolean isProxy;
     public static String proxy_server;
     public static int proxy_port;
-    public static boolean IS_GOP_BASED_SPLITTING;
+    public static int IS_GOP_BASED_SPLITTING;
 
     
     static
@@ -53,7 +53,7 @@ public class Config
             isProxy = Boolean.valueOf(prop.getProperty("isProxy"));
             proxy_server = prop.getProperty("proxy_server");
             proxy_port = Integer.parseInt(prop.getProperty("proxy_port"));
-            IS_GOP_BASED_SPLITTING = Boolean.valueOf(prop.getProperty("is_GOP_Based_splitting"));
+            IS_GOP_BASED_SPLITTING = Integer.parseInt(prop.getProperty("is_GOP_Based_splitting"));
         }
         catch (IOException ex)
         {

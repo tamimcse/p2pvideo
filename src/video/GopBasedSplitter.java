@@ -22,22 +22,22 @@ public class GopBasedSplitter
 {
 
     private File videoFile = null;
-    private int maximumSegmentInterval = 15;
+    private int numberOfGOP = 15;
+    private static int count = 0;
 
 //	private static final TimeUnit TIME_UNIT = TimeUnit.MICROSECONDS;	
-    public GopBasedSplitter(File video, int maximumSegmentInterval)
+    public GopBasedSplitter(File video, int numberOfGOP)
     {
         if (video == null || !video.exists() || video.isDirectory())
         {
             throw new RuntimeException("The video file is not valid:" + video);
         }
         this.videoFile = video;
-        this.maximumSegmentInterval = maximumSegmentInterval;
+        this.numberOfGOP = numberOfGOP;
     }
 
     public int splitFiles() throws Exception
     {
-        long inputTimeIntervalInMillies = TimeUnit.MICROSECONDS.convert(maximumSegmentInterval, TimeUnit.SECONDS);
         //create a media reader
         IMediaReader mediaReader = ToolFactory.makeReader(videoFile.getAbsolutePath());
         // have the reader create a buffered image that others can reuse
@@ -49,21 +49,25 @@ public class GopBasedSplitter
         //read and decode packets from the source file and
         //dispatch decoded audio and video to the writer
         int fileCounter = 1;
-        String url = videoFile.getAbsolutePath().substring(0, videoFile.getAbsolutePath().lastIndexOf(".")) + "_" + fileCounter + Config.FILE_EXTENSION;
+        String url = videoFile.getAbsolutePath().substring(0, videoFile.getAbsolutePath().lastIndexOf(".")) + "_" + fileCounter +"."+ Config.FILE_EXTENSION;
         IMediaWriter writer = ToolFactory.makeWriter(url, mediaReader);
         cutter.addListener(writer);
         while (mediaReader.readPacket() == null)
         {
-            if (cutter.isKeyFrame() || cutter.getTimeCounter() > maximumSegmentInterval)
+            if (cutter.isComplete)
             {
-                System.out.println("inputTimeIntervalInMillies=" + inputTimeIntervalInMillies);
+                if(count < numberOfGOP)
+                {
+                    count++;
+                    continue;
+                }
+                count = 0;
                 cutter.removeListener(writer);
                 writer.close();// flusing and closing earlier writers..
                 fileCounter++;
-                url = videoFile.getAbsolutePath().substring(0, videoFile.getAbsolutePath().lastIndexOf(".")) + "_" + fileCounter + Config.FILE_EXTENSION;
+                url = videoFile.getAbsolutePath().substring(0, videoFile.getAbsolutePath().lastIndexOf(".")) + "_" + fileCounter +"."+ Config.FILE_EXTENSION;
                 writer = ToolFactory.makeWriter(url, mediaReader);
                 writer.addListener(ToolFactory.makeDebugListener());
-                inputTimeIntervalInMillies = inputTimeIntervalInMillies + TimeUnit.MICROSECONDS.convert(maximumSegmentInterval, TimeUnit.SECONDS); // next time slot..
                 cutter.addListener(writer);
             }
         }
@@ -74,25 +78,13 @@ public class GopBasedSplitter
 
     public class Cutter extends MediaToolAdapter
     {
-        private long timeCounterInMillies = 0;
-        private boolean isKeyFrame = false;
+        private boolean isComplete = false;
 
         @Override
         public void onVideoPicture(IVideoPictureEvent arg0)
         {
-            timeCounterInMillies = arg0.getTimeStamp();
-            isKeyFrame = arg0.getPicture().isKeyFrame();
+            isComplete = arg0.getPicture().isComplete();
             super.onVideoPicture(arg0);
         }
-
-        public boolean isKeyFrame()
-        {
-            return isKeyFrame;
-        }
-        
-        public long getTimeCounter()
-        {
-            return timeCounterInMillies;
-        }        
     }
 }

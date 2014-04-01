@@ -1,3 +1,7 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package video;
 
 import com.xuggle.mediatool.IMediaReader;
@@ -14,29 +18,31 @@ import leecher.Config;
  *
  * @author Tamim
  */
-public class TimeBasedSplitter
+public class ClosedGopBasedSplitter
 {
-    private File videoFile = null;
-    private int timeIntervalInSec = 15;
 
-    public TimeBasedSplitter(File video, int timeInterval)
+    private File videoFile = null;
+    private int maximumSegmentInterval = 15;
+
+//	private static final TimeUnit TIME_UNIT = TimeUnit.MICROSECONDS;	
+    public ClosedGopBasedSplitter(File video, int maximumSegmentInterval)
     {
         if (video == null || !video.exists() || video.isDirectory())
         {
             throw new RuntimeException("The video file is not valid:" + video);
         }
-        videoFile = video;
-        timeIntervalInSec = timeInterval;
+        this.videoFile = video;
+        this.maximumSegmentInterval = maximumSegmentInterval;
     }
 
     public int splitFiles() throws Exception
     {
-        long inputTimeIntervalInMillies = TimeUnit.MICROSECONDS.convert(timeIntervalInSec, TimeUnit.SECONDS);
+        long inputTimeIntervalInMillies = TimeUnit.MICROSECONDS.convert(maximumSegmentInterval, TimeUnit.SECONDS);
         //create a media reader
         IMediaReader mediaReader = ToolFactory.makeReader(videoFile.getAbsolutePath());
         // have the reader create a buffered image that others can reuse
         mediaReader.setBufferedImageTypeToGenerate(BufferedImage.TYPE_3BYTE_BGR);
-        TimeBasedSplitter.Cutter cutter = new TimeBasedSplitter.Cutter();
+        Cutter cutter = new Cutter();
 
         //add a viewer to the reader, to see the decoded media
         mediaReader.addListener(cutter);
@@ -48,8 +54,7 @@ public class TimeBasedSplitter
         cutter.addListener(writer);
         while (mediaReader.readPacket() == null)
         {
-            System.out.println("cutter.getTimeCounter()=" + cutter.getTimeCounter());
-            if (cutter.getTimeCounter() > inputTimeIntervalInMillies)
+            if (cutter.isKeyFrame())
             {
                 System.out.println("inputTimeIntervalInMillies=" + inputTimeIntervalInMillies);
                 cutter.removeListener(writer);
@@ -58,7 +63,7 @@ public class TimeBasedSplitter
                 url = videoFile.getAbsolutePath().substring(0, videoFile.getAbsolutePath().lastIndexOf(".")) + "_" + fileCounter +"."+ Config.FILE_EXTENSION;
                 writer = ToolFactory.makeWriter(url, mediaReader);
                 writer.addListener(ToolFactory.makeDebugListener());
-                inputTimeIntervalInMillies = inputTimeIntervalInMillies + TimeUnit.MICROSECONDS.convert(timeIntervalInSec, TimeUnit.SECONDS); // next time slot..
+                inputTimeIntervalInMillies = inputTimeIntervalInMillies + TimeUnit.MICROSECONDS.convert(maximumSegmentInterval, TimeUnit.SECONDS); // next time slot..
                 cutter.addListener(writer);
             }
         }
@@ -69,20 +74,18 @@ public class TimeBasedSplitter
 
     public class Cutter extends MediaToolAdapter
     {
-
-        private long timeCounterInMillies = 0;
+        private boolean isKeyFrame = false;
 
         @Override
         public void onVideoPicture(IVideoPictureEvent arg0)
         {
-            timeCounterInMillies = arg0.getTimeStamp();
+            isKeyFrame = arg0.getPicture().isKeyFrame();
             super.onVideoPicture(arg0);
         }
 
-        public long getTimeCounter()
+        public boolean isKeyFrame()
         {
-            return timeCounterInMillies;
+            return isKeyFrame;
         }
     }
-
 }
