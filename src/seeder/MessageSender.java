@@ -36,6 +36,11 @@ public class MessageSender
             SocketSender replyHello = new SocketSender(Config.LEECHER_IP, Config.LEECHER_PORT, MessageManager.getHandshakeMessage("1", "4888884", Config.NUM_OF_FILES));
             executor.execute(replyHello);
 
+            if(Config.NUM_OF_FILES == 0)
+            {
+                System.out.println("Number of files to be sent is zero");
+            }
+            
             for (int i = 1; i <= Config.NUM_OF_FILES; i++)
             {
                 byte[] bytes = Files.readAllBytes(Paths.get(String.format("%s/%s_%d.%s", Config.localDir, Config.fileName, i, Config.FILE_EXTENSION)));

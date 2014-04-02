@@ -31,7 +31,7 @@ public class Main
         if (!Files.exists(Paths.get("temp.txt"), LinkOption.NOFOLLOW_LINKS) && Files.exists(Paths.get(Config.localDir + "\\" + Config.fileName + "." + Config.FILE_EXTENSION), LinkOption.NOFOLLOW_LINKS))
         {
             ISplitter splitter = SplitterFactory.INSTANCE.getSplitter(Config.IS_GOP_BASED_SPLITTING);
-            splitter.splitFiles(new File(Config.localDir + "\\" + Config.fileName + "." + Config.FILE_EXTENSION), Config.CHUNK_SIZE);
+            Config.NUM_OF_FILES = splitter.splitFiles(new File(Config.localDir + "\\" + Config.fileName + "." + Config.FILE_EXTENSION), Config.CHUNK_SIZE);
             FileUtils.write(new File("temp.txt"), Config.NUM_OF_FILES+"");
             Config.IS_SEEDER = true;
         }
