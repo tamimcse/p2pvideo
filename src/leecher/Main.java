@@ -1,25 +1,16 @@
 package leecher;
 
-import com.xuggle.mediatool.IMediaReader;
-import com.xuggle.mediatool.IMediaViewer;
-import com.xuggle.mediatool.IMediaWriter;
-import com.xuggle.mediatool.ToolFactory;
 import java.io.File;
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.logging.Logger;
 import messages.MessageManager;
-import seeder.MessageSender;
 import org.apache.commons.io.FileUtils;
-import video.MediaPlayer;
-import video.VLCMediaPlayer;
-import video.ClosedGopBasedSplitter;
-import video.GopBasedSplitter;
-import video.TimeBasedSplitter;
+import seeder.MessageSender;
+import video.ISplitter;
+import video.SplitterFactory;
 
 /**
  *
@@ -39,22 +30,8 @@ public class Main
                 
         if (!Files.exists(Paths.get("temp.txt"), LinkOption.NOFOLLOW_LINKS) && Files.exists(Paths.get(Config.localDir + "\\" + Config.fileName + "." + Config.FILE_EXTENSION), LinkOption.NOFOLLOW_LINKS))
         {
-            if(Config.IS_GOP_BASED_SPLITTING == 0)
-            {
-                TimeBasedSplitter timeBasedSplitter = new TimeBasedSplitter(new File(Config.localDir + "\\" + Config.fileName + "." + Config.FILE_EXTENSION), Config.CHUNK_SIZE);
-                Config.NUM_OF_FILES = timeBasedSplitter.splitFiles();                                       
-            }
-            else if(Config.IS_GOP_BASED_SPLITTING == 1)
-            {
-                GopBasedSplitter gopBasedSplitter = new GopBasedSplitter(new File(Config.localDir + "\\" + Config.fileName + "." + Config.FILE_EXTENSION), 50);
-                Config.NUM_OF_FILES = gopBasedSplitter.splitFiles();                    
-            }
-            else
-            {
-                ClosedGopBasedSplitter v = new ClosedGopBasedSplitter(new File(Config.localDir + "\\" + Config.fileName + "." + Config.FILE_EXTENSION), Config.CHUNK_SIZE);
-                Config.NUM_OF_FILES = v.splitFiles(); 
-            }
-            
+            ISplitter splitter = SplitterFactory.INSTANCE.getSplitter(Config.IS_GOP_BASED_SPLITTING);
+            splitter.splitFiles(new File(Config.localDir + "\\" + Config.fileName + "." + Config.FILE_EXTENSION), Config.CHUNK_SIZE);
             FileUtils.write(new File("temp.txt"), Config.NUM_OF_FILES+"");
             Config.IS_SEEDER = true;
         }

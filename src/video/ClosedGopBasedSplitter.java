@@ -18,24 +18,10 @@ import leecher.Config;
  *
  * @author Tamim
  */
-public class ClosedGopBasedSplitter
+public class ClosedGopBasedSplitter implements ISplitter
 {
-
-    private File videoFile = null;
-    private int maximumSegmentInterval = 15;
-
-//	private static final TimeUnit TIME_UNIT = TimeUnit.MICROSECONDS;	
-    public ClosedGopBasedSplitter(File video, int maximumSegmentInterval)
-    {
-        if (video == null || !video.exists() || video.isDirectory())
-        {
-            throw new RuntimeException("The video file is not valid:" + video);
-        }
-        this.videoFile = video;
-        this.maximumSegmentInterval = maximumSegmentInterval;
-    }
-
-    public int splitFiles() throws Exception
+    @Override
+    public int splitFiles(File videoFile, int maximumSegmentInterval) throws Exception
     {
         long inputTimeIntervalInMillies = TimeUnit.MICROSECONDS.convert(maximumSegmentInterval, TimeUnit.SECONDS);
         //create a media reader

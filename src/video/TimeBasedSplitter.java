@@ -14,22 +14,10 @@ import leecher.Config;
  *
  * @author Tamim
  */
-public class TimeBasedSplitter
+public class TimeBasedSplitter implements ISplitter
 {
-    private File videoFile = null;
-    private int timeIntervalInSec = 15;
-
-    public TimeBasedSplitter(File video, int timeInterval)
-    {
-        if (video == null || !video.exists() || video.isDirectory())
-        {
-            throw new RuntimeException("The video file is not valid:" + video);
-        }
-        videoFile = video;
-        timeIntervalInSec = timeInterval;
-    }
-
-    public int splitFiles() throws Exception
+    @Override
+    public int splitFiles(File videoFile, int timeIntervalInSec) throws Exception
     {
         long inputTimeIntervalInMillies = TimeUnit.MICROSECONDS.convert(timeIntervalInSec, TimeUnit.SECONDS);
         //create a media reader

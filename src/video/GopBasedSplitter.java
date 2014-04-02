@@ -18,25 +18,13 @@ import leecher.Config;
  *
  * @author Tamim
  */
-public class GopBasedSplitter
+public class GopBasedSplitter implements ISplitter
 {
-
-    private File videoFile = null;
-    private int numberOfGOP = 15;
+    public static final int NUM_OF_GOP = 50;
     private static int count = 0;
 
-//	private static final TimeUnit TIME_UNIT = TimeUnit.MICROSECONDS;	
-    public GopBasedSplitter(File video, int numberOfGOP)
-    {
-        if (video == null || !video.exists() || video.isDirectory())
-        {
-            throw new RuntimeException("The video file is not valid:" + video);
-        }
-        this.videoFile = video;
-        this.numberOfGOP = numberOfGOP;
-    }
-
-    public int splitFiles() throws Exception
+    @Override
+    public int splitFiles(File videoFile, int numberOfGOP) throws Exception
     {
         //create a media reader
         IMediaReader mediaReader = ToolFactory.makeReader(videoFile.getAbsolutePath());
@@ -56,7 +44,7 @@ public class GopBasedSplitter
         {
             if (cutter.isComplete)
             {
-                if(count < numberOfGOP)
+                if(count < NUM_OF_GOP)
                 {
                     count++;
                     continue;
