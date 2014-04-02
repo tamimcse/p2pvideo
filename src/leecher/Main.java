@@ -34,6 +34,11 @@ public class Main
             Config.NUM_OF_FILES = splitter.splitFiles(new File(Config.localDir + "\\" + Config.fileName + "." + Config.FILE_EXTENSION), Config.CHUNK_SIZE);
             FileUtils.write(new File("temp.txt"), Config.NUM_OF_FILES+"");
             Config.IS_SEEDER = true;
+            
+            if(Config.NUM_OF_FILES == 0)
+            {
+                System.out.println("Number of files to be sent is zero");
+            }
         }
 
         System.out.println("chunk_size: " + Config.CHUNK_SIZE);
