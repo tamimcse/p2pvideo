@@ -55,6 +55,8 @@ public class MessageReceiver extends Thread
         try
         {
             byte[] bytes = receiveByte(clientSocket);
+            System.out.println("size of message"+bytes.length+" Receiving message: "+new String(bytes));
+            
             MessageType type = MessageManager.getType(bytes);
 
             if (type == MessageType.HELLO && Config.IS_SEEDER)

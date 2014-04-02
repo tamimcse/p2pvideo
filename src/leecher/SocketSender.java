@@ -7,6 +7,7 @@ package leecher;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -54,9 +55,11 @@ public class SocketSender implements Runnable
             {
                 socket = new Socket(Config.proxy_server, Config.proxy_port);
                 byte [] addressField = (this.ip+":"+this.port+"$$$").getBytes();
-                byte [] message = new byte[addressField.length+data.length];
-                System.arraycopy(addressField, 0, message, 0, addressField.length);
-                System.arraycopy(data, 0, message, addressField.length, data.length);
+                byte [] headerLength = ByteBuffer.allocate(4).putInt(addressField.length+4).array();
+                byte [] message = new byte[headerLength.length+addressField.length+data.length];
+                System.arraycopy(headerLength, 0, message, 0, headerLength.length);
+                System.arraycopy(addressField, 0, message, headerLength.length, addressField.length);
+                System.arraycopy(data, 0, message, headerLength.length+addressField.length, data.length);
                 send(socket, message);
                 socket.close();                
             }
