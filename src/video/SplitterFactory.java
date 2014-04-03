@@ -17,7 +17,7 @@ public enum SplitterFactory
             case 1:
                 return new GopBasedSplitter();
              default:
-                 return new ClosedGopBasedSplitter();
+                 return new KeyFrameBasedSplitter();
         }
     }
 }

@@ -18,7 +18,7 @@ import leecher.Config;
  *
  * @author Tamim
  */
-public class ClosedGopBasedSplitter implements ISplitter
+public class KeyFrameBasedSplitter implements ISplitter
 {
     @Override
     public int splitFiles(File videoFile, int maximumSegmentInterval) throws Exception
