@@ -14,10 +14,8 @@ public enum SplitterFactory
         {
             case 0:
                 return new TimeBasedSplitter();
-            case 1:
-                return new GopBasedSplitter();
              default:
-                 return new KeyFrameBasedSplitter();
+                 return new GopBasedSplitter();
         }
     }
 }

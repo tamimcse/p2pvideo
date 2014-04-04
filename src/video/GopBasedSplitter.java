@@ -20,12 +20,10 @@ import leecher.Config;
  */
 public class GopBasedSplitter implements ISplitter
 {
-    public static final int NUM_OF_GOP = 50;
-    private static int count = 0;
-
     @Override
-    public int splitFiles(File videoFile, int numberOfGOP) throws Exception
+    public int splitFiles(File videoFile, int maximumSegmentInterval) throws Exception
     {
+        long inputTimeIntervalInMillies = TimeUnit.MICROSECONDS.convert(maximumSegmentInterval, TimeUnit.SECONDS);
         //create a media reader
         IMediaReader mediaReader = ToolFactory.makeReader(videoFile.getAbsolutePath());
         // have the reader create a buffered image that others can reuse
@@ -42,20 +40,16 @@ public class GopBasedSplitter implements ISplitter
         cutter.addListener(writer);
         while (mediaReader.readPacket() == null)
         {
-            if (cutter.isComplete)
+            if (cutter.isKeyFrame())
             {
-                if(count < NUM_OF_GOP)
-                {
-                    count++;
-                    continue;
-                }
-                count = 0;
+                System.out.println("inputTimeIntervalInMillies=" + inputTimeIntervalInMillies);
                 cutter.removeListener(writer);
                 writer.close();// flusing and closing earlier writers..
                 fileCounter++;
                 url = videoFile.getAbsolutePath().substring(0, videoFile.getAbsolutePath().lastIndexOf(".")) + "_" + fileCounter +"."+ Config.FILE_EXTENSION;
                 writer = ToolFactory.makeWriter(url, mediaReader);
                 writer.addListener(ToolFactory.makeDebugListener());
+                inputTimeIntervalInMillies = inputTimeIntervalInMillies + TimeUnit.MICROSECONDS.convert(maximumSegmentInterval, TimeUnit.SECONDS); // next time slot..
                 cutter.addListener(writer);
             }
         }
@@ -66,13 +60,18 @@ public class GopBasedSplitter implements ISplitter
 
     public class Cutter extends MediaToolAdapter
     {
-        private boolean isComplete = false;
+        private boolean isKeyFrame = false;
 
         @Override
         public void onVideoPicture(IVideoPictureEvent arg0)
         {
-            isComplete = arg0.getPicture().isComplete();
+            isKeyFrame = arg0.getPicture().isKeyFrame();
             super.onVideoPicture(arg0);
+        }
+
+        public boolean isKeyFrame()
+        {
+            return isKeyFrame;
         }
     }
 }
