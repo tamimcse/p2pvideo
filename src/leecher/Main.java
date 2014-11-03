@@ -28,10 +28,10 @@ public class Main
             Config.NUM_OF_FILES = Integer.parseInt(FileUtils.readFileToString(new File("temp.txt")));
         }
                 
-        if (!Files.exists(Paths.get("temp.txt"), LinkOption.NOFOLLOW_LINKS) && Files.exists(Paths.get(Config.localDir + "\\" + Config.fileName + "." + Config.FILE_EXTENSION), LinkOption.NOFOLLOW_LINKS))
+        if (!Files.exists(Paths.get("temp.txt"), LinkOption.NOFOLLOW_LINKS) && Files.exists(Paths.get(Config.localDir + "/" + Config.fileName + "." + Config.FILE_EXTENSION), LinkOption.NOFOLLOW_LINKS))
         {
             ISplitter splitter = SplitterFactory.INSTANCE.getSplitter(Config.IS_GOP_BASED_SPLITTING);
-            Config.NUM_OF_FILES = splitter.splitFiles(new File(Config.localDir + "\\" + Config.fileName + "." + Config.FILE_EXTENSION), Config.CHUNK_SIZE);
+            Config.NUM_OF_FILES = splitter.splitFiles(new File(Config.localDir + "/" + Config.fileName + "." + Config.FILE_EXTENSION), Config.CHUNK_SIZE);
             FileUtils.write(new File("temp.txt"), Config.NUM_OF_FILES+"");
             Config.IS_SEEDER = true;
             
