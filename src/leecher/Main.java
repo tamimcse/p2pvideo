@@ -67,7 +67,7 @@ public class Main
         else
         {
             HttpClient client = new DefaultHttpClient();
-            HttpGet request = new HttpGet("localhost:8000/port");
+            HttpGet request = new HttpGet("http://"+Config.SEEDER_IP+":8000/port");
             HttpResponse response = client.execute(request);
 
             // Get the response
@@ -75,9 +75,9 @@ public class Main
               (new InputStreamReader(response.getEntity().getContent()));
     
             String line = "";
-            while ((line = rd.readLine()) != null) 
+            if ((line = rd.readLine()) != null) 
             {
-                System.out.println(""+line);
+                Config.SEEDER_PORT = Integer.parseInt(line);
             } 
             
             SocketSender sendHello = new SocketSender(Config.SEEDER_IP, Config.SEEDER_PORT, MessageManager.getHelloMessage(Inet4Address.getLocalHost().getHostAddress(),Config.LOCAL_PORT));
