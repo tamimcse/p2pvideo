@@ -3,8 +3,10 @@ package leecher;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Inet4Address;
 import java.net.InetSocketAddress;
@@ -13,6 +15,10 @@ import java.nio.file.LinkOption;
 import java.nio.file.Paths;
 import messages.MessageManager;
 import org.apache.commons.io.FileUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import seeder.MessageSender;
 import video.ISplitter;
 import video.SplitterFactory;
@@ -60,6 +66,20 @@ public class Main
         }
         else
         {
+            HttpClient client = new DefaultHttpClient();
+            HttpGet request = new HttpGet("localhost:8000/port");
+            HttpResponse response = client.execute(request);
+
+            // Get the response
+            BufferedReader rd = new BufferedReader
+              (new InputStreamReader(response.getEntity().getContent()));
+    
+            String line = "";
+            while ((line = rd.readLine()) != null) 
+            {
+                System.out.println(""+line);
+            } 
+            
             SocketSender sendHello = new SocketSender(Config.SEEDER_IP, Config.SEEDER_PORT, MessageManager.getHelloMessage(Inet4Address.getLocalHost().getHostAddress(),Config.LOCAL_PORT));
             MessageSender.addTask(sendHello);
         }
