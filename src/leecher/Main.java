@@ -80,6 +80,8 @@ public class Main
                 Config.SEEDER_PORT = Integer.parseInt(line);
             } 
             
+            System.out.println("Seeder IP: "+Config.SEEDER_IP+" Seeder port: "+Config.SEEDER_PORT);
+            
             SocketSender sendHello = new SocketSender(Config.SEEDER_IP, Config.SEEDER_PORT, MessageManager.getHelloMessage(Inet4Address.getLocalHost().getHostAddress(),Config.LOCAL_PORT));
             MessageSender.addTask(sendHello);
         }
