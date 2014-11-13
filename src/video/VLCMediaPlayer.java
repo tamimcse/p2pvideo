@@ -5,11 +5,13 @@
 package video;
 
 import com.sun.jna.NativeLibrary;
+import com.sun.jna.platform.unix.X11;
 import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Color;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import leecher.Config;
 import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
 import uk.co.caprica.vlcj.medialist.MediaList;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
@@ -39,7 +41,10 @@ public enum VLCMediaPlayer
     
     VLCMediaPlayer()
     {
-        NativeLibrary.addSearchPath("libvlc", "C:/Program Files (x86)/VideoLAN/VLC");
+        //Windows: C:/Program Files (x86)/VideoLAN/VLC
+        //Linux: /usr/lib
+        //64 bit JDK only can use 32 bit native library and 32 bit JDK can only use 32 bit native library
+        NativeLibrary.addSearchPath("libvlc", Config.LIB_VLC_PATH);
         mediaPlayerFactory = new MediaPlayerFactory();
 
         Canvas canvas = new Canvas();

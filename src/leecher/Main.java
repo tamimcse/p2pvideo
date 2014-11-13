@@ -1,8 +1,13 @@
 package leecher;
 
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.Inet4Address;
+import java.net.InetSocketAddress;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Paths;
@@ -22,6 +27,7 @@ public class Main
 //    private static final String inputFilename = "D:/Newfolder/Wildlife.mpg";
     public static void main(String[] args) throws IOException, Exception
     {
+        
         if (Files.exists(Paths.get("temp.txt"), LinkOption.NOFOLLOW_LINKS))
         {
             Config.IS_SEEDER = true;
@@ -45,10 +51,28 @@ public class Main
         SocketListener listener = new SocketListener();
         listener.start();
         
-        if(!Config.IS_SEEDER)
+        if(Config.IS_SEEDER)
+        {
+            HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
+            server.createContext("/port", new SeederPortHandler());
+            server.setExecutor(null); // creates a default executor
+            server.start();
+        }
+        else
         {
             SocketSender sendHello = new SocketSender(Config.SEEDER_IP, Config.SEEDER_PORT, MessageManager.getHelloMessage(Inet4Address.getLocalHost().getHostAddress(),Config.LOCAL_PORT));
             MessageSender.addTask(sendHello);
         }
     }
+    
+       static class SeederPortHandler implements HttpHandler {
+        public void handle(HttpExchange t) throws IOException {
+            String response = ""+Config.SEEDER_PORT;
+            t.sendResponseHeaders(200, response.length());
+            OutputStream os = t.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
+        }
+    }
+
 }

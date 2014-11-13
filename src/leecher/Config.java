@@ -28,9 +28,11 @@ public class Config
     public static int LEECHER_PORT;
     public static int THREAD_POOL;
     public static boolean isProxy;
+    public static boolean isRealSeeder;
     public static String proxy_server;
     public static int proxy_port;
     public static int IS_GOP_BASED_SPLITTING;
+    public static String LIB_VLC_PATH;
 
     
     static
@@ -54,6 +56,12 @@ public class Config
             proxy_server = prop.getProperty("proxy_server");
             proxy_port = Integer.parseInt(prop.getProperty("proxy_port"));
             IS_GOP_BASED_SPLITTING = Integer.parseInt(prop.getProperty("is_GOP_Based_splitting"));
+            isRealSeeder = Boolean.valueOf(prop.getProperty("isRealSeeder"));
+            LIB_VLC_PATH = prop.getProperty("LibVLCPath");
+            if(isRealSeeder)
+            {
+                
+            }
         }
         catch (IOException ex)
         {
