@@ -61,25 +61,16 @@ public class Main
         {
             HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
             server.createContext("/port", new SeederPortHandler());
-            server.setExecutor(null); // creates a default executor
+            //Host and IP address are different in VM
+            server.createContext("/hostname", new SeederHostHandler());
+            
             server.start();
         }
         else
         {
-            HttpClient client = new DefaultHttpClient();
-            HttpGet request = new HttpGet("http://"+Config.SEEDER_IP+":8000/port");
-            HttpResponse response = client.execute(request);
+            Config.SEEDER_HOST = getSeederHost();
+            Config.SEEDER_PORT = getSeederPort();
 
-            // Get the response
-            BufferedReader rd = new BufferedReader
-              (new InputStreamReader(response.getEntity().getContent()));
-    
-            String line = "";
-            if ((line = rd.readLine()) != null) 
-            {
-                Config.SEEDER_PORT = Integer.parseInt(line);
-            } 
-            
             System.out.println("Seeder IP: "+Config.SEEDER_IP+" Seeder port: "+Config.SEEDER_PORT);
             
             SocketSender sendHello = new SocketSender(Config.SEEDER_HOST, Config.SEEDER_PORT, MessageManager.getHelloMessage(Inet4Address.getLocalHost().getHostName(),Config.LOCAL_PORT));
@@ -95,6 +86,51 @@ public class Main
             os.write(response.getBytes());
             os.close();
         }
+    }
+       
+    static class SeederHostHandler implements HttpHandler {
+        public void handle(HttpExchange t) throws IOException {
+            String response = ""+Inet4Address.getLocalHost().getHostName();
+            t.sendResponseHeaders(200, response.length());
+            OutputStream os = t.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
+        }
+    }
+    
+    private static int getSeederPort() throws IOException
+    {
+        HttpClient client = new DefaultHttpClient();
+        HttpGet request = new HttpGet("http://"+Config.SEEDER_IP+":8000/port");
+        HttpResponse response = client.execute(request);
+
+        // Get the response
+        BufferedReader rd = new BufferedReader
+          (new InputStreamReader(response.getEntity().getContent()));
+
+        String line = "";
+        int port = 0;
+        if ((line = rd.readLine()) != null) 
+        {
+            port = Integer.parseInt(line);
+        } 
+        
+        return port;
+    }
+    
+    private static String getSeederHost() throws IOException
+    {
+        HttpClient client = new DefaultHttpClient();
+        HttpGet request = new HttpGet("http://"+Config.SEEDER_IP+":8000/hostname");
+        HttpResponse response = client.execute(request);
+
+        // Get the response
+        BufferedReader rd = new BufferedReader
+          (new InputStreamReader(response.getEntity().getContent()));
+
+        String line = "";
+        line = rd.readLine();
+        return line;
     }
 
 }

@@ -73,6 +73,13 @@ public class MessageReceiver extends Thread
             }
             else
             {
+                File outputDir = new File(Config.localDir);
+                
+                if(!outputDir.exists())
+                {
+                    outputDir.mkdir();
+                }
+                
                 byte[] fileData = new byte[bytes.length - 8];
                 int id = bytes[3] | (bytes[2] << 1) | (bytes[1] << 2) | (bytes[0] << 3);
                 System.arraycopy(bytes, 8, fileData, 0, fileData.length);
