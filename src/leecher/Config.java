@@ -20,6 +20,7 @@ public class Config
     public static String trackerIP;
     public static int SEEDER_PORT = 32;
     public static String SEEDER_IP;
+    public static String SEEDER_HOST;
     public static String FILE_NAME;
     public static String FILE_EXTENSION;
     public static int NUM_OF_FILES;
@@ -49,6 +50,7 @@ public class Config
             infoHash = prop.getProperty("info_hash");
             trackerIP = prop.getProperty("tracker");
             SEEDER_IP = prop.getProperty("seeder_ip");
+            SEEDER_HOST = prop.getProperty("seeder_host");
             SEEDER_PORT = Integer.parseInt(prop.getProperty("seeder_port"));
             FILE_EXTENSION = prop.getProperty("file_extension");
             THREAD_POOL = Integer.parseInt(prop.getProperty("thread_pool"));
