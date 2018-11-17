@@ -1,5 +1,7 @@
 This is the reference implementation of :
 
-A Network-centric TCP for Interactive Video Delivery Networks (VDN)
-MD Iftakharul Islam, Javed I Khan
-IEEE ICNP, 2017.
+Video Splicing Techniques for P2P Video Streaming
+
+MD Iftakharul Islam, Javed I Khan 
+
+IEEE ICDCS workshop on Computer and Networking Experimental Research using Testbeds, 2015. 
