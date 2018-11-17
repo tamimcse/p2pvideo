@@ -1,5 +1,5 @@
-The is the reference implementation of: 
+This is the reference implementation of :
 
-Video Splicing Techniques for P2P Video Streaming
+A Network-centric TCP for Interactive Video Delivery Networks (VDN)
 MD Iftakharul Islam, Javed I Khan
-IEEE ICDCS workshop on Computer and Networking Experimental Research using Testbeds, 2015. 
+IEEE ICNP, 2017.
